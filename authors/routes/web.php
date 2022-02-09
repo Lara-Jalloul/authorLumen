@@ -18,8 +18,17 @@ $router->get('/', function () use ($router) {
 });
 
 
-$router->get('authors', 'AuthorController@index');
-$router->get('authors/{id}','AuthorController@show');
-$router->post('authors', 'AuthorController@store');
-$router->delete('authors/{id}', 'AuthorController@delete');
-$router->put('authors/{id}', 'AuthorController@update');
+$router->group(['prefix' => 'api'], function() use ($router){
+
+    $router->post('register', 'UserController@register');
+    $router->post('login', 'UserController@login');
+    
+    $router->group(['middleware' => 'auth'], function() use ($router){
+        $router->post('logout', 'UserController@logout');
+        $router->get('authors', 'AuthorController@index');
+        $router->get('authors/{id}','AuthorController@show');
+        $router->post('authors', 'AuthorController@store');
+        $router->delete('authors/{id}', 'AuthorController@delete');
+        $router->put('authors/{id}', 'AuthorController@update');
+    });
+});
